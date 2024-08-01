@@ -16,3 +16,39 @@ INSERT INTO marathon (participant_name, previous_experience,  completion_fractio
     VALUES ("Antoni Porowski", "yes", 0.640);
 INSERT INTO marathon (participant_name, previous_experience,  completion_fraction)
     VALUES ("Rajnighanda Kapoor", "no", 1);
+
+-- For this Project I used the marathon table to work on using SQL to create percentages and to use case statements 
+to better organize the data.
+
+--turning the  whole numbers with decimals into percents
+select participant_name
+,completion_fraction*100 as completion_percent
+from marathon;
+
+--Without using ROUND
+select participant_name
+,completion_fraction*100 as completion_percent
+from marathon
+where participant_name="Karamo Brown";
+
+--using ROUND
+select participant_name
+, ROUND(completion_fraction*100) as completion_percent
+from marathon
+where participant_name="Karamo Brown";
+
+--using ROUND and specifying how many decimals you want in your result
+select participant_name
+,ROUND(completion_fraction*100,1) as completion_percent
+from marathon
+where participant_name="Karamo Brown";
+
+-- grouping the employees by the percent of the marathon they completed
+select count(*),
+CASE WHEN completion_fraction>=.75 THEN"75%+"
+WHEN completion_fraction>=.50 THEN"50%+"
+WHEN completion_fraction>=.25 THEN"25%+"
+ELSE "Under 25%"
+END as quarter_completed
+from marathon
+group by quarter_completed;
