@@ -1,0 +1,57 @@
+#In this SQL, I'm querying a database with multiple tables in it to quantify statistics about customer and order data. 
+--How many orders were placed in January?
+SELECT COUNT(*)
+FROM BIT_DB.JanSales
+WHERE length(OrderID) = 6
+AND OrderID <> 'Order ID';
+
+--how many of those orders were for an iphone?
+SELECT COUNT(orderid)
+FROM BIT_DB.JanSales
+WHERE Product= 'iPhone'
+AND length(OrderID) = 6
+AND OrderID <> 'Order ID';
+
+--select account numbers for all orders placed in Febuary
+Select customers.acctnum
+From BIT_DB.customers
+Inner join BIT_DB.FebSales
+ON customers.order_id= BIT_DB.FebSales.orderID
+WHERE length(OrderID) = 6
+AND OrderID <> 'Order ID';
+
+--Which product was the cheapest one sold in January, and what was the price?
+SELECT DISTINCT
+Product, 
+Price
+From BIT_DB.JanSales
+WHERE Price IN
+(select min(Price)
+FROM BIT_DB.JanSales);
+
+--What is the total reveune for each product sold in January?
+select sum(quantity)*price as Revenue,
+product
+from BIT_DB.JanSales
+Group by Product;
+
+--Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, 
+--and what was the total revenue?
+SELECT
+sum(Quantity),
+product,
+sum(quantity)*price as revenue
+FROM BIT_DB.FebSales
+WHERE location = '548 Lincoln St, Seattle, WA 98101'
+GROUP BY product;
+
+--How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+Select 
+count(distinct cust.acctnum),
+avg(quantity*price)
+from BIT_DB.FebSales as Feb
+Left join BIT_DB.customers as cust
+on Feb.orderid=cust.order_id
+WHERE Feb.Quantity>2
+AND length(OrderID) = 6
+AND OrderID <> 'Order ID';
